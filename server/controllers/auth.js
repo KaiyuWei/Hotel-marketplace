@@ -11,16 +11,34 @@ export const register = async (req, res) => {
             .send('Password is required and should be minimum 6 characters long!');
 
     let userExist = await User.findOne({ email }).exec();
-    if (userExist) 
+    if (userExist)
         return res.status(400).send('Email is taken!');
     //register
     const user = new User(req.body);
     try {
         await user.save();
         console.log('USER CREATED ', user);
-        return res.json({ok: true});
+        return res.json({ ok: true });
     } catch {
         console.log('CREATE USER FAILED ', err)
         return res.status(400).send('Error. Try again.');
     }
-}
+};
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        // check if user with that email exist
+        let user = await User.findOne({ email }).exec();
+        if (!user) res.status(400).send("User with that email not found");
+        // compare password
+        user.comparePassword(password, (err, match) => {
+            console.log('COMPARE PASSWORD IN LOGIN ERR');
+            if (!match || err) return res.status(400).send('Wrong password');
+            console.log("GENERATE A TOKEN THEN DEND AS RESPONSE TO CLIENT");
+        });
+    } catch {
+        console.log('LOGIN ERROR', err);
+        res.status(400).send("Signing failed");
+    }
+};
