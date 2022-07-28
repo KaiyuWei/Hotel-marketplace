@@ -32,13 +32,14 @@ export const login = async (req, res) => {
         let user = await User.findOne({ email }).exec();
         if (!user) res.status(400).send("User with that email not found");
         // compare password
+        console.log("User: ", user.methods);
         user.comparePassword(password, (err, match) => {
-            console.log('COMPARE PASSWORD IN LOGIN ERR');
+            console.log('COMPARE PASSWORD IN LOGIN ERR', err);
             if (!match || err) return res.status(400).send('Wrong password');
-            console.log("GENERATE A TOKEN THEN DEND AS RESPONSE TO CLIENT");
+            console.log("GENERATE A TOKEN THEN SEND AS RESPONSE TO CLIENT");
         });
-    } catch {
+    } catch(err) {  // forgot to pass "err" to catch here, but it is necessary, otherwise err is undefined in the body
         console.log('LOGIN ERROR', err);
-        res.status(400).send("Signing failed");
+        res.status(400).send("Sign in failed");
     }
 };
