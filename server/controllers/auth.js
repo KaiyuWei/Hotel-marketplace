@@ -32,7 +32,6 @@ export const login = async (req, res) => {
         let user = await User.findOne({ email }).exec();
         if (!user) res.status(400).send("User with that email not found");
         // compare password
-        console.log("User: ", user.methods);
         user.comparePassword(password, (err, match) => {
             console.log('COMPARE PASSWORD IN LOGIN ERR', err);
             if (!match || err) return res.status(400).send('Wrong password');
