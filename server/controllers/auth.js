@@ -1,4 +1,5 @@
 import User from '../models/user';
+import jwt from 'jsonwebtoken';
 
 // test comment
 export const register = async (req, res) => {
@@ -36,7 +37,17 @@ export const login = async (req, res) => {
         user.comparePassword(password, (err, match) => {
             console.log('COMPARE PASSWORD IN LOGIN ERR', err);
             if (!match || err) return res.status(400).send('Wrong password');
-            console.log("GENERATE A TOKEN THEN SEND AS RESPONSE TO CLIENT");
+            // console.log("GENERATE A TOKEN THEN SEND AS RESPONSE TO CLIENT");
+            let token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {
+                expiresIn: '7d',
+            });
+            res.json({token, user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            }});
         });
     } catch(err) {  // forgot to pass "err" to catch here, but it is necessary, otherwise err is undefined in the body
         console.log('LOGIN ERROR', err);
