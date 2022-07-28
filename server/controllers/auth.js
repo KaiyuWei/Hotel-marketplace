@@ -1,4 +1,5 @@
 import User from '../models/user';
+
 // test comment
 export const register = async (req, res) => {
     console.log(req.body);  // to make sure that the front end has sent the request to the backend

@@ -43,7 +43,6 @@ userSchema.pre('save', function (next) {
         return next();
     }
 })
-export default mongoose.model('User', userSchema);
 
 userSchema.methods.comparePassword = function (password, next) {
     bcrypt.compare(password, this.password, function (err, match) {
@@ -56,3 +55,5 @@ userSchema.methods.comparePassword = function (password, next) {
         return next(null, match)
     });
 }
+
+export default mongoose.model('User', userSchema);
