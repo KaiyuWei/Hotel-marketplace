@@ -28,7 +28,7 @@ const Login = ({history}) => {  // "history" is a prop from Route.
                     type: 'LOGGED_IN_USER',
                     payload: res.data,
                 });
-                history.push("/");
+                history.push("\dashboard");
 
             }
         } catch (err) {

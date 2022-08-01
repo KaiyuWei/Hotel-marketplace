@@ -5,7 +5,7 @@ if (window.localStorage.getItem('auth')) {
   // the key name 'auth' was set by 'setItem' when store the user information in local storage 
   userState = JSON.parse(window.localStorage.getItem('auth'));  // JSON.parse converts Json to js object
 } else {
-  userState = null;  // {}
+  userState = null;  // {}      
 }
 
 export const authReducer = (state=userState, action) => {  
