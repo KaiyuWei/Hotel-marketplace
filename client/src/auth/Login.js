@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux';
 
 
 // a foo comment here
-const Login = ({history}) => {
+const Login = ({history}) => {  // "history" is a prop from Route.
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -28,7 +28,7 @@ const Login = ({history}) => {
                     type: 'LOGGED_IN_USER',
                     payload: res.data,
                 });
-                // history.push("/");
+                history.push("/");
 
             }
         } catch (err) {
