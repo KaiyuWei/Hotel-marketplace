@@ -10,6 +10,8 @@ import Register from './auth/Register';
 import React from 'react';
 import TopNav from './components/TopNav';
 import Dashboard from './user/Dashboard';
+import DashboardSeller from './user/DashboardSeller';
+import NewHotel from './hotels/NewHotel';
 
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <PrivateRoute exact path="/dashboard" component={Dashboard} />
+        <PrivateRoute exact path="/dashboard/seller" component={DashboardSeller} />
+        <PrivateRoute exact path="/hotels/new" component={NewHotel} />
       </Switch>
     </BrowserRouter>
   );
