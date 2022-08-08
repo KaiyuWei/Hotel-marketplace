@@ -35,3 +35,18 @@ export const createConnectAccount = async (req, res) => {
     console.log('LOGIN LINK: ', link);
     res.send(link);
 };
+
+export const getAccountStatus = async (req, res) => {
+    // console.log('GET ACCOUNT STATUS');
+    const user = await User.findById(req.auth._id).exec(); 
+    const account = await stripe.accounts.retrieve(user.stripe_account_id);
+    // console.log('USER ACCOUNT RETRIEVE => ', account);
+    const updatedUser = await User.findByIdAndUpdate(user._id, 
+    {
+        stripe_seller: account,  // save the updated information in the mongodb database.
+    }, {new: true},
+    ).select("-password").exec();  // send all information except the password to the frontend
+
+// console.log(updatedUser); 
+res.json(updatedUser);
+};
