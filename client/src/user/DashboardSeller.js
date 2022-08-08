@@ -16,7 +16,8 @@ const DashboardSeller = () => {
         setLoading(true);
         try{
             let res = await createConnectAccount(auth.token)    // send token for stipe validation
-            console.log('DashboardSeller response => ', res);  // get login link
+            // console.log('DashboardSeller response => ', res);  // get login link
+            window.location.href = res.data;
         } catch (err) {
             console.log(err);
             toast.error('Stripe connect failed. Try again.');
