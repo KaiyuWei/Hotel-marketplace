@@ -47,6 +47,9 @@ export const login = async (req, res) => {
                 email: user.email,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
+                stripe_account_id: user.stripe_account_id,
+                stripe_seller: user.stripe_seller,
+                stripeSession: user.stripeSession,
             }});
         });
     } catch(err) {  // forgot to pass "err" to catch here, but it is necessary, otherwise err is undefined in the body

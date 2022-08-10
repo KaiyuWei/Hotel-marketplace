@@ -1,30 +1,52 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {Card, Avatar} from 'antd';
+import { Card, Avatar, Badge } from 'antd';
 import moment from 'moment';
-import { FieldContext } from "rc-field-form";
+import { getAccountBalance, currencyFormatter } from "../actions/stripe";
 
 const {Meta} = Card;
+const {Ribbon} = Badge;
 
 const ConnectNav = () => {
      const {auth} = useSelector((state) => ({...state}));
      const {user} = auth;
-    return <div className ="d-flex justify-content-around">
-        <Card>
-            <Meta avatar={<Avatar>{user.name[0]}</Avatar>} 
-                title={user.name} 
-                description={`Joined ${moment(user.createdAt).fromNow()}`} 
-            />
-        </Card>
-        {auth && 
-        auth.user && 
-        auth.user.stipe_seller &&
-        auth.user.stipe_seller.changes_enabled && (
-        <>
-            <div>Pending balance</div>
-            <div>Payout settings</div>
-        </>
-        )}
-    </div>;
+     const [balance, setBalance] = useState(0);
+
+    useEffect(() => {
+        getAccountBalance(auth.token).then(res => {
+            // console.log(res);
+            setBalance(res.data);
+        });
+    }, []);
+
+    return (
+        <div className ="d-flex justify-content-around">
+            <Card>
+                <Meta avatar={<Avatar>{user.name[0]}</Avatar>} 
+                    title={user.name} 
+                    description={`Joined ${moment(user.createdAt).fromNow()}`} 
+                />
+            </Card>
+            {
+            auth && 
+            auth.user && 
+            auth.user.stripe_seller &&
+            auth.user.stripe_seller.charges_enabled && (
+            <>
+                <Ribbon text="Available" color="grey">
+                    <Card className="bg-light pt-1">
+                        {balance && balance.pending && balance.pending.map((bp, i) => (
+                            <span key={i} className="lead">
+                                {currencyFormatter(bp)}
+                            </span>
+                        ))}
+                    </Card>
+                </Ribbon>
+                <div>Payout settings</div>
+            </>
+            )}
+        </div>
+    );
 }
 
 export default ConnectNav;
