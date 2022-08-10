@@ -76,4 +76,19 @@ export const getAccountBalance = async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+};
+
+export const payoutSetting = async (req, res) => {
+    try{
+        const user = await User.findById(req.auth._id).exec();
+        const loginLink = await stripe.accounts.createLoginLink(user.stripe_account_id, 
+            {
+                redirect_url: process.env.STRIPE_SETTING_REDIRECT_URL, 
+            }
+        );
+        // console.log('LOGIN LINK FOR PAYOUT SETTING', loginLink);
+        res.json(loginLink);
+    } catch(err) {
+        console.log('STRIPE PAYOUT SETTING ERROR ',err);
+    }
 }
