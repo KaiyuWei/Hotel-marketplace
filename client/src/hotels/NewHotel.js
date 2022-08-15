@@ -1,8 +1,29 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import AlgoliaPlaces from 'algolia-places-react';
+import { GoogleCircleFilled } from "@ant-design/icons";
+import PlacesAutocomplete from "react-places-autocomplete";
+import { DatePicker, Select } from 'antd';
+import moment from "moment";
+import { createHotel } from "../actions/hotel";
+import { useSelector } from "react-redux";
+
+// to-do: add location autoComplete (goole map places service)
+
+const {Option} = Select;
+
+
+const config = {
+    appId: process.env.REACT_APP_ALGOLIA_APP_ID,
+    apiKey: process.env.REACT_APP_ALGOLIA_API_KEY,
+    language: "en",
+    countries: ["nl"],
+}
 
 const NewHotel = () => {
+    const {auth} = useSelector((state) => ({...state}));
+    const {token, user} = auth;
+    const user_id = user._id;
     // state
     const [values, setValues] = useState({
         title: '',
@@ -19,8 +40,28 @@ const NewHotel = () => {
     const [preview, setPreview] = useState(
         "https://via.placeholder.com/100x100.png?text=PREVIEW");
     const {title, content, location, image, price, from, to, bed} = values;
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // create form data, since we have file data (the image), so cannot be simply sent by json data
+        let hotelData = new FormData();
+        hotelData.append('title', title);
+        hotelData.append('content', content);
+        hotelData.append('location', location);
+        hotelData.append('price', price);
+        hotelData.append('postedBy', user_id);
+        image && hotelData.append('image', image);
+        hotelData.append('from', from);
+        hotelData.append('to', to);
+        hotelData.append('bed', bed);
 
+        console.log([...hotelData]);
+        let res = await createHotel(token, hotelData);
+        console.log('HOTEL CREATE RES', res);
+        toast('New hotel is posted');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000)
+        
     };
     const handleImageChange = (e) => {
         // console.log(e.target.files[0]);
@@ -30,7 +71,7 @@ const NewHotel = () => {
     const handleChange = (e) => {
         setValues({...values, [e.target.name]: e.target.value});
     };
-
+    
     const hotelForm = () => (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -61,6 +102,16 @@ const NewHotel = () => {
                     value={content} 
                 />
 
+                <input
+                    name="location"
+                    className="form-control ml-2  mr-2" 
+                    placeholder="Location" 
+                    defaultValue={location} 
+                    options={config} 
+                    onChange={handleChange}  // suggestion is a prop
+                    style={{height: "50px"}}
+                />  
+
                 <input 
                     type="number" 
                     name="price" 
@@ -70,16 +121,36 @@ const NewHotel = () => {
                     value={price} 
                 />
 
-                <input 
+                {/* <input 
                     type="number" 
                     name="bed" 
                     onChange={handleChange} 
                     placeholder="Number of Beds" 
                     className="form-control m-2" 
                     value={bed} 
-                />
-            </div>
+                /> */}
 
+            <Select onChange={(value) => setValues({...values, bed:value})} 
+                className="2-100 m-2" size="large" 
+                placeholder="Number of beds"
+            >
+                <Option key={1}>{1}</Option>
+                <Option key={2}>{2}</Option>
+                <Option key={3}>{3}</Option>
+                <Option key={4}>{4}</Option>
+            </Select>
+
+            </div>
+                <DatePicker placeholder="from date" 
+                className="form-control m-2" 
+                onChange={(date, dateString, current) => setValues({...values, from: dateString})} 
+                disabledDate={(current) => current && current.valueOf() < moment().subtract(1, 'days')}
+            />
+            <DatePicker 
+                placeholder="to date" 
+                className="form-control m-2" 
+                onChange={(date, dateString) => setValues({...values, to: dateString})} 
+            />
             <button className="btn m-2 btn-outline-primary">Save</button>
         </form>
     )
