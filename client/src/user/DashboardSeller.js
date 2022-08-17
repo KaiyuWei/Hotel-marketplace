@@ -8,6 +8,7 @@ import {createConnectAccount} from '../actions/stripe'
 import {toast} from 'react-toastify';
 import { sellerHotels } from "../actions/hotel";
 import SmallCard from "../components/cards/SmallCards";
+import { deleteHotel } from "../actions/hotel";
 
 
 const DashboardSeller = () => {
@@ -36,6 +37,18 @@ const DashboardSeller = () => {
             setLoading(false);
         }
     }
+
+    const handleHotelDelete = async (hotelId) => {
+        if (!window.confirm('Delete the hotel?')) return;
+        try{
+            const res = await deleteHotel(auth.token, hotelId);
+            toast.success("Hotel Deleted");
+            loadSellersHotels();
+        } catch (err) {
+            console.log("delete request faile, ", err);
+        }
+        
+    };
 
     const notConnected = () => (
         <div className="container-fuid">
@@ -76,6 +89,7 @@ const DashboardSeller = () => {
                         <SmallCard key={h._id} h={h} 
                             showViewMoreButton={false}
                             owner={true}
+                            handleHotelDelete={handleHotelDelete}
                          />
                     )}
                 </div>
