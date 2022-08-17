@@ -10,6 +10,9 @@ export const create = async (req, res) => {
         let files = req.files;
 
         let hotel = new Hotel(fields);
+
+        hotel.postedBy = fields.postedBy;
+        
         // handle image
         if (files.image) {
             hotel.image.data = fs.readFileSync(files.image.path);
@@ -40,4 +43,21 @@ export const hotels = async (req, res) => {
     .exec();
     // console.log(all);
     res.json(all);
+};
+
+export const image = async (req, res) => {
+    let hotel = await Hotel.findById(req.params.hotelId).exec();
+    if (hotel && hotel.image && hotel.image.data !== null) {
+        res.set('Content-Type', hotel.image.contentType);
+        return res.send(hotel.image.data);
+    };
+};
+
+export const sellerHotels = async (req, res) => {
+    let all = await Hotel.find({postedBy: req.auth._id})
+    .select('-image.data')
+    .populate('postedBy', '_id name')
+    .exec();
+
+    res.send(all);
 }

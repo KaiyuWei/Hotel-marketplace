@@ -20,6 +20,7 @@ const NewHotel = () => {
         title: '',
         content: '',
         image: '',
+        location: '',
         price: '',
         from: '',
         to: '',
@@ -29,8 +30,7 @@ const NewHotel = () => {
     // destructuring variables from state
     const [preview, setPreview] = useState(
         "https://via.placeholder.com/100x100.png?text=PREVIEW");
-    const [location, setLocation] = useState("");
-    const {title, content, image, price, from, to, bed} = values;
+    const {title, content, image, price, from, to, bed, location} = values;
     const handleSubmit = async (e) => {
         e.preventDefault();
         // create form data, since we have file data (the image), so cannot be simply sent by json data
@@ -83,8 +83,6 @@ const NewHotel = () => {
                                 handleChange={handleChange}
                                 handleImageChange={handleImageChange}
                                 handleSubmit={handleSubmit}
-                                location={location}
-                                setLocation={setLocation}
                             />
                     </div>
                 <div className="col-md-2">

@@ -54,7 +54,7 @@ export const getAccountStatus = async (req, res) => {
     const user = await User.findById(req.auth._id).exec(); 
     const account = await stripe.accounts.retrieve(user.stripe_account_id);
     // console.log('USER ACCOUNT RETRIEVE => ', account);
-    const updatedAccount = await updateDelayDays(account);
+    const updatedAccount = await updateDelayDays(account.id);
     const updatedUser = await User.findByIdAndUpdate(user._id, 
     {
         stripe_seller: account,  // save the updated information in the mongodb database.
@@ -71,7 +71,7 @@ export const getAccountBalance = async (req, res) => {
         const balance = await stripe.balance.retrieve({
             stripeAccount : user.stripe_account_id,
         });
-        console.log("BALANCE===> ", balance);
+        // console.log("BALANCE===> ", balance);
         res.json(balance);
     } catch (err) {
         console.log(err);

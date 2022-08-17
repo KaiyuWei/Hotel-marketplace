@@ -2,15 +2,27 @@ import DashboardNav from "../components/DashboardNav";
 import ConnectNav from "../components/ConnectNav";
 import {Link} from 'react-router-dom';
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HomeOutlined } from '@ant-design/icons'
 import {createConnectAccount} from '../actions/stripe'
 import {toast} from 'react-toastify';
+import { sellerHotels } from "../actions/hotel";
+import SmallCard from "../components/cards/SmallCards";
 
 
 const DashboardSeller = () => {
     const {auth} = useSelector((state) => ({...state}));
     const [loading, setLoading] = useState(false);
+    const [hotels, setHotels] = useState([]);
+
+    useEffect(() => {
+        loadSellersHotels();
+    }, [])
+
+    const loadSellersHotels = async () => {
+        let {data} = await sellerHotels(auth.token);
+        setHotels(data);
+    }
 
     const handleClick = async () => {
         setLoading(true);
@@ -54,8 +66,18 @@ const DashboardSeller = () => {
                         <h2>Your Hotels</h2>
                     </div>
                     <div className="col-md-2">
-                        <Link to="/hotels/new" className="btn btn-primary">+ Add New</Link>
+                        <Link to="/hotels/new" className="btn btn-primary">
+                            + Add New
+                        </Link>
                     </div>
+                </div>
+                <div className="row">
+                    {hotels.map((h) => 
+                        <SmallCard key={h._id} h={h} 
+                            showViewMoreButton={false}
+                            owner={true}
+                         />
+                    )}
                 </div>
             </div>
     )
