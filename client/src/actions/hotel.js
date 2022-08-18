@@ -39,4 +39,12 @@ export const read = async (hotelId) =>
         // we don't send the header because this is not a protected route, 
         // so no need to be authorized
 
-        
+export const updateHotel = async (token, data, hotelId) => 
+    await axios.put(`${process.env.REACT_APP_API}/update-hotel/${hotelId}`, 
+        data, 
+        {
+            headers:{
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );   
