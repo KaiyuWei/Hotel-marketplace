@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { DatePicker, Select } from 'antd';
-import moment from "moment";
 import { createHotel } from "../actions/hotel";
 import { useSelector } from "react-redux";
 import HotelCreateForm from "../components/forms/HotelCreateForm";
@@ -24,7 +23,7 @@ const NewHotel = () => {
         price: '',
         from: '',
         to: '',
-        bed: '',  // how many pages are available
+        bed: '',  
 
     });
     // destructuring variables from state
