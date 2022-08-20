@@ -13,7 +13,6 @@ const {Option} = Select;
 const NewHotel = () => {
     const {auth} = useSelector((state) => ({...state}));
     const {token, user} = auth;
-    const user_id = user._id;
     // state
     const [values, setValues] = useState({
         title: '',
@@ -38,7 +37,7 @@ const NewHotel = () => {
         hotelData.append('content', content);
         hotelData.append('location', location);
         hotelData.append('price', price);
-        hotelData.append('postedBy', user_id);
+        hotelData.append('postedBy', user._id);
         image && hotelData.append('image', image);
         hotelData.append('from', from);
         hotelData.append('to', to);

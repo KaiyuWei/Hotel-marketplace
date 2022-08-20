@@ -10,7 +10,6 @@ const {Option} = Select;
 const EditHotel = ({match}) => {
     const {auth} = useSelector((state) => ({...state}));
     const {token, user} = auth;
-    const user_id = user._id;
 
     const [values, setValues] = useState({
         title: '',
@@ -49,7 +48,7 @@ const EditHotel = ({match}) => {
         hotelData.append('content', content);
         hotelData.append('location', location);
         hotelData.append('price', price);
-        hotelData.append('postedBy', user_id);
+        hotelData.append('postedBy', user._id);
         image && hotelData.append('image', image);
         hotelData.append('from', from);
         hotelData.append('to', to);

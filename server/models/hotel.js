@@ -23,7 +23,7 @@ const hotelSchema = new Schema({
     },
     postedBy: {
         type: ObjectId, 
-        required: "User",
+        ref: "User",  // tells Mongoose which model to use during population
     },
     image: {
         data: Buffer, 
