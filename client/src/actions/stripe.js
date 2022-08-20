@@ -26,7 +26,7 @@ export const getAccountStatus = async (token) =>
     });
 
     export const currencyFormatter = data => {
-        return (data.amount).toLocaleString(data.currency, {
+        return (data.amount / 100).toLocaleString(data.currency, {  // data.amount in cents, so should be divided by 100
             style: 'currency',
             currency: data.currency,
         })

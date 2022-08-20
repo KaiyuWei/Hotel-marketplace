@@ -29,7 +29,7 @@ const SmallCard = ({h, handleHotelDelete = (f) => f,
                         <div className="card-body">
                             <h3 className="card-title">{h.title} <span className="float-right text-primary">
                                     {currencyFormatter({
-                                        amount:h.price,
+                                        amount:h.price * 100,
                                         currency: "usd",
                                     })}
                                 </span></h3>
