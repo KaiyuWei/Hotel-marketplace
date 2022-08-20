@@ -1,10 +1,14 @@
 import React, {useState, useEffect} from "react";
 import { read, diffDays } from "../actions/hotel";
 import moment from "moment";
+import {useSelector} from 'react-redux';
+import { getSessionId } from "../actions/stripe";
 
-const ViewHotel = ({ match }) => {
+const ViewHotel = ({ match, history }) => {
     const [hotel, setHotel] = useState({});
     const [image, setImage] = useState("");
+
+    const {auth} = useSelector((state) => ({...state}));
 
     useEffect(() => {
         loadSellerHotel();
@@ -16,6 +20,14 @@ const ViewHotel = ({ match }) => {
         setHotel(res.data);
         setImage(`${process.env.REACT_APP_API}/hotel/image/${res.data._id}`);
     }
+
+    const handleClick = async (e) =>{
+        e.preventDefault();
+        if (!auth) history.push('/login');
+        console.log(auth.token, match.params.hotelId);
+        let res = await getSessionId(auth.token, match.params.hotelId);
+        console.log("get session id response", res.data.sessionId);
+    };
 
     return (
     <>
@@ -49,7 +61,10 @@ const ViewHotel = ({ match }) => {
                         {moment(new Date(hotel.to)).format('DD/MM/YYYY, h:mm:ss a')}
                     </p>
                     <i>Posted by {hotel.postedBy && hotel.postedBy.name}</i>
-                    <button className="btn btn-block btn-lg btn-primary mt-3">Book Now</button>
+                    <button onClick={handleClick} className="btn btn-block btn-lg btn-primary mt-3">
+                        
+                        {auth && auth.token ? 'Book Now' : 'Login to Book'}
+                    </button>
                 </div>
             </div>
         </div>

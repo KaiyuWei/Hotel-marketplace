@@ -2,7 +2,7 @@ import express from 'express';
 // middleware
 import { requireSignin } from '../middlewares';
 // controllers
-import { createConnectAccount } from '../controllers/stripe';
+import { createConnectAccount, stripeSessionId } from '../controllers/stripe';
 import { getAccountStatus, getAccountBalance, payoutSetting } from '../controllers/stripe';
 
 
@@ -12,5 +12,6 @@ router.post('/create-connect-account', requireSignin, createConnectAccount);  //
 router.post('/get-account-status', requireSignin, getAccountStatus);
 router.post('/get-account-balance', requireSignin, getAccountBalance);
 router.post('/payout-setting', requireSignin, payoutSetting);
+router.post('/stripe-sesion-id', requireSignin, stripeSessionId)
 
 module.exports = router;
