@@ -1,5 +1,6 @@
 import User from "../models/user";
 import Hotel from "../models/hotel";
+import Order from "../models/order";
 import Stripe from 'stripe';
 import queryString from 'query-string';
 
@@ -128,8 +129,8 @@ export const stripeSessionId = async (req, res) => {
             },
         },  
         // success and cancel url
-        success_url: process.env.STRIPE_SUCCESS_URL,
-        cancel_url: process.env.STRIPE_CANCEL_URL,     
+        success_url: `${process.env.STRIPE_SUCCESS_URL}/${item._id}`,
+        cancel_url: `${process.env.STRIPE_CANCEL_URL}/${item._id}`,     
     });
     // add the session object to user in the db
     await User.findByIdAndUpdate(req.auth._id, {stripeSession: session}).exec();
@@ -138,4 +139,41 @@ export const stripeSessionId = async (req, res) => {
     res.send({
         sessionId: session.id,
     });
+};
+
+export const stripeSuccess = async (req, res) => {
+    try {
+        // get hotel Id from the req body
+        const {hotelId} = req.body;
+        // find currently logged in user
+        const user  = await User.findById(req.auth._id).exec();
+        // check if user has stripe session
+        if(!user.stripeSession) return; 
+        // retrieve stripe session by session Id. Session is previously saved in user database
+        const session = await stripe.checkout.sessions.retrieve(user.stripeSession.id);
+        // check session payment success;
+        if(session.payment_status === 'paid') {
+            // check if order with taht session already exist by querying orders collection
+            const orderExist = await Order.findOne({"session.id": session.id}).exec();
+            if (orderExist) {
+                // order already exists
+                res.json({success: true});
+            } else {
+                // create a new order
+                let newOrder = await new Order({
+                    hotel: hotelId,
+                    session,  // same name, so this is enough
+                    orderedBy: user._id,
+                }).save();
+                // remove user's stripeSession
+                await User.findByIdAndUpdate(user._id, {
+                    $set: {stripeSession: {} },
+                });
+                // send response
+                res.json({success: true});
+            }
+        }
+    } catch (err) {
+        console.log("STRIPE SUCCESS ERR", err)
+    }
 };
