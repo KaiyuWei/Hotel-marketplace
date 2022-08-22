@@ -1,4 +1,5 @@
 import Hotel from "../models/hotel";
+import Order from "../models/order";
 import fs from "fs";
 
 // req is from the post request from "routes/hotel.js"
@@ -104,3 +105,13 @@ export const update = async (req, res) => {
         res.status(400).send("Hotel update failed. Try again.")
     }    
 };
+
+export const userHotelBookings = async (req, res) => {
+    const all = await Order.find({orderedBy: req.auth._id})
+    .select('session')
+    .populate('hotel', '-image.data')
+    .populate('orderedBy', '_id name')
+    .exec();
+
+    res.json(all);
+}

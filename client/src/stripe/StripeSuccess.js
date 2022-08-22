@@ -15,9 +15,9 @@ const StripeSuccess = ({match, history}) => {  // match is the data passed by ur
         .then(res => {
             if(res.data.success) {
                 // console.log('stripe success response', res.data);
-                history.pushState('/dashboard');
+                history.push('/dashboard');
             } else {
-                history.pushState('/stripe/cancel');
+                history.push('/stripe/cancel');
             }
         });
     }, [match.params.hotelId]);

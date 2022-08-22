@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
         ref: 'Hotel',
     },
     session: {},
-    postedBy: {
+    orderedBy: {
         type: ObjectId,
         ref: 'User',
     },

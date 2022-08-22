@@ -1,5 +1,5 @@
 import express from 'express';
-import { create, hotels, image, sellerHotels, remove, read, update } from "../controllers/hotel";
+import { create, hotels, image, sellerHotels, remove, read, update, userHotelBookings } from "../controllers/hotel";
 import formidable from 'express-formidable';  // make sure that we receive formidable files
 import { requireSignin, hotelOwner } from '../middlewares';
 
@@ -17,5 +17,8 @@ router.put('/update-hotel/:hotelId',
     formidable(), 
     update
 );
+
+// orders
+router.get('/user-hotel-bookings', requireSignin, userHotelBookings)
 
 module.exports = router;
