@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import { userHotelBookings } from "../actions/hotel";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import BookingCard from "../components/cards/BookingCard";
 
 const Dashboard = () => {
     const {auth: {token},} = useSelector((state) => ({...state})); 
@@ -39,7 +40,14 @@ const Dashboard = () => {
             </div>
 
             <div className="row">
-                <pre>{JSON.stringify(booking, null, 4)}</pre>
+                {booking.map(b => (
+                    <BookingCard 
+                        key={b._id} 
+                        hotel={b.hotel} 
+                        session={b.session} 
+                        orderedBy={b.orderedBy} 
+                    />
+                ))}
             </div>
         </>
     );
