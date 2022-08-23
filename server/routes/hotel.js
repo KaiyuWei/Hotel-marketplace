@@ -8,7 +8,8 @@ import {
     read, 
     update, 
     userHotelBookings,
-    isAlreadyBooked 
+    isAlreadyBooked, 
+    searchListings
 } from "../controllers/hotel";
 import formidable from 'express-formidable';  // make sure that we receive formidable files
 import { requireSignin, hotelOwner } from '../middlewares';
@@ -31,5 +32,8 @@ router.put('/update-hotel/:hotelId',
 // orders
 router.get('/user-hotel-bookings', requireSignin, userHotelBookings)
 router.get('/is-already-booked/:hotelId', requireSignin, isAlreadyBooked)
+
+// search listings
+router.post('/search-listings', searchListings)
 
 module.exports = router;

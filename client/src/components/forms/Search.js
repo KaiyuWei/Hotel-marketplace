@@ -9,12 +9,12 @@ const {Option} = Select;
 
 const Search = () => {
     const [location, setLocation] = useState("");
-    const [data, setDate] = useState("");
+    const [date, setDate] = useState("");
     const [bed, setBed] = useState("");
     const history = useHistory();
 
     const handleSubmit = () => {
-        history.push(`/search-result?location=${location}&data=${data}&bed=${bed}`);
+        history.push(`/search-result?location=${location}&date=${date}&bed=${bed}`);
     };
 
     return (
@@ -28,7 +28,7 @@ const Search = () => {
                 />
             </div>
                 <RangePicker 
-                    onChange={(value, dateString) => setDate(dateString)} 
+                    onChange={(value, dateStrings) => setDate(dateStrings)} 
                     disabledDate={(current) => 
                         current && current.valueOf() < moment().subtract(1, "days")} 
                     className="w-100"
